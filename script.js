@@ -1,40 +1,113 @@
-/* =========================
-   ACTIVE NAVIGATION
-========================= */
-
-const navLinks =
-    document.querySelectorAll("nav a");
-
-const sections =
-    document.querySelectorAll("main section");
+// ========================================
+// Hiten Singla Portfolio
+// Simple JavaScript
+// ========================================
 
 
-const observer =
-    new IntersectionObserver(
-        (entries) => {
+// NAV ACTIVE LINK
+const sections = document.querySelectorAll("section[id]");
+const navLinks = document.querySelectorAll(".nav-link");
 
-            entries.forEach(
-                (entry) => {
+function updateActiveNav() {
 
-                    if (entry.isIntersecting) {
+  let current = "";
 
-                        navLinks.forEach(
-                            (link) => {
+  sections.forEach(section => {
 
-                                const target =
-                                    link.getAttribute("href");
+    const sectionTop = section.offsetTop - 180;
 
-                                link.classList.toggle(
-                                    "active",
-                                    target ===
-                                    "#" + entry.target.id
-                                );
+    if (window.scrollY >= sectionTop) {
+      current = section.getAttribute("id");
+    }
 
-                            }
-                        );
+  });
 
-                    }
+  navLinks.forEach(link => {
 
+    link.classList.remove("active");
+
+    const href = link.getAttribute("href");
+
+    if (href === "#" + current) {
+      link.classList.add("active");
+    }
+
+  });
+
+}
+
+window.addEventListener("scroll", updateActiveNav);
+
+updateActiveNav();
+
+
+// SCROLL REVEAL
+const revealElements = document.querySelectorAll(
+  ".glass-card, .section-heading, .hero-text, .hero-photo-area"
+);
+
+const observer = new IntersectionObserver(
+  entries => {
+
+    entries.forEach(entry => {
+
+      if (entry.isIntersecting) {
+
+        entry.target.classList.add("revealed");
+
+      }
+
+    });
+
+  },
+  {
+    threshold: 0.12
+  }
+);
+
+
+revealElements.forEach(element => {
+
+  element.classList.add("reveal");
+
+  observer.observe(element);
+
+});
+
+
+// SMOOTH NAVIGATION
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+
+  link.addEventListener("click", function(event) {
+
+    const targetId = this.getAttribute("href");
+
+    if (targetId === "#") return;
+
+    const target = document.querySelector(targetId);
+
+    if (!target) return;
+
+    event.preventDefault();
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  });
+
+});
+
+
+// CURRENT YEAR
+const yearElements = document.querySelectorAll("[data-year]");
+
+yearElements.forEach(element => {
+
+  element.textContent = new Date().getFullYear();
+
+});
                 }
             );
 
